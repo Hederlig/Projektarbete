@@ -1,6 +1,8 @@
-let filter = document.createElement("button");
-filter.textContent = "Filter";
-document.querySelector("#edu").appendChild(filter);
+let eduFilter = document.createElement("button");
+eduFilter.textContent = "Filter";
+document.querySelector("#edu").appendChild(eduFilter);
+
+let inputs = document.querySelectorAll("input[name='programme']");
 
 let sortAge = document.createElement("button");
 sortAge.textContent = "Sort Age";
@@ -31,18 +33,27 @@ async function renderData() {
     document.querySelector("#userList").appendChild(li);
   });
 
-// filter students
-let inputs = document.querySelectorAll("input[name='education']");
-inputs.forEach((input) => {
-  if (input.checked) {
-    programme = input.value;
-    let studentName = document.createElement("li");
-    studentName.textContent =
-      students.firstName + ", " + students.lastName + ", " + students.age;
-    document.querySelector("#userList").appendChild(studentName);
-  }
-});
-// Sort students by age,name,lastname
+  // filter students
+
+  eduFilter.addEventListener("click", () => {
+    inputs.forEach((input) => {
+      if (input.checked) {
+       let education = input.value;
+       // console.log(education)
+        document.querySelector("#userList").innerHTML = "";
+      let filteredStudents = students.filter((students) => students.programme === education);
+          filteredStudents.forEach((students) => {
+          // console.log(filteredStudents);
+          let studentEdu = document.createElement("li");
+          studentEdu.textContent = students.firstName + ", " + students.lastName + ", " + students.age;
+          document.querySelector("#userList").appendChild(studentEdu);
+        });
+      }
+    });
+  });
+
+
+  // Sort students by age,name,lastname
 
   sortAge.addEventListener("click", () => {
     document.querySelector("#userList").innerHTML = "";
@@ -69,6 +80,7 @@ inputs.forEach((input) => {
       document.querySelector("#userList").appendChild(studentName);
     });
   });
+
   sortLast.addEventListener("click", () => {
     document.querySelector("#userList").innerHTML = "";
     let studentN = students.sort((a, b) =>
@@ -83,16 +95,14 @@ inputs.forEach((input) => {
     });
   });
 }
+
 renderData();
 
-let arr = ["kalle", "sunne", "brandond"];
-arr.sort();
-console.log(arr);
-
-
+// let arr = ["kalle", "sunne", "brandond"];
+// arr.sort();
+// console.log(arr);
 
 // STUFF THAT DIDNT WORK AT ALL aka FAFO!!!!
-
 
 // if(a.firsName < b.firstName) { return -1; }
 // if(a.firstName > b.firstName)
