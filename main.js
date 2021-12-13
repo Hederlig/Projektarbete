@@ -8,6 +8,8 @@ let sortAge = document.createElement("button");
 sortAge.textContent = "Sort Age";
 document.querySelector("#userInfo").appendChild(sortAge);
 
+let mainList = document.querySelector("#userInfo")
+
 let sortName = document.createElement("button");
 sortName.textContent = "First Name A - Z";
 document.querySelector("#userInfo").appendChild(sortName);
@@ -15,6 +17,8 @@ document.querySelector("#userInfo").appendChild(sortName);
 let sortLast = document.createElement("button");
 sortLast.textContent = "Last Name A - Z";
 document.querySelector("#userInfo").appendChild(sortLast);
+let schoolList = document.querySelector("#showSchools")
+
 
 let getData = async (URL) => {
   let response = await fetch(URL);
@@ -27,31 +31,57 @@ async function renderData() {
   let schools = await getData("https://api.mocki.io/v2/01047e91/schools");
 
   students.forEach((students) => {
-    let li = document.createElement("li");
+    let li = document.createElement("h3");
     li.textContent =
-      students.firstName + ", " + students.lastName + ", " + students.age;
+      students.firstName + ", " + students.lastName + ", " + students.age + ", " + students.programme ;
     document.querySelector("#userList").appendChild(li);
+   
+    // What School suits the student
+    let filterSchools = schools.filter((schools) => {
+      let hobbyMatch = false;
+      students.hobbies.forEach((hobby) => {
+        if (schools.activities.includes(hobby)) {
+          hobbyMatch = true;
+        }
+      });
+      return schools.programmes.includes(students.programme) && hobbyMatch;
+    });
+   
+        li.addEventListener("click", () => {
+         schoolList.innerHTML =""
+         filterSchools.forEach((schools) => {
+          let name = document.createElement("h3")
+          name.style.color = "Red"
+         name.innerHTML =   schools.name
+        schoolList.appendChild(name)
+   
+      });
+    });
   });
-
-  // filter students
+  
+   // filter students
 
   eduFilter.addEventListener("click", () => {
     inputs.forEach((input) => {
       if (input.checked) {
-       let education = input.value;
-       // console.log(education)
+        let education = input.value;
+        // console.log(education)
+
         document.querySelector("#userList").innerHTML = "";
-      let filteredStudents = students.filter((students) => students.programme === education);
-          filteredStudents.forEach((students) => {
+        document.querySelector("#filterList").innerHTML = "";
+        let filteredStudents = students.filter(
+          (students) => students.programme === education
+        );
+        filteredStudents.forEach((students) => {
           // console.log(filteredStudents);
           let studentEdu = document.createElement("li");
-          studentEdu.textContent = students.firstName + ", " + students.lastName + ", " + students.age;
+          studentEdu.textContent =
+            students.firstName + ", " + students.lastName + ", " + students.age;
           document.querySelector("#userList").appendChild(studentEdu);
         });
       }
     });
   });
-
 
   // Sort students by age,name,lastname
 
@@ -94,64 +124,7 @@ async function renderData() {
       document.querySelector("#userList").appendChild(studentName);
     });
   });
+
 }
 
 renderData();
-
-// let arr = ["kalle", "sunne", "brandond"];
-// arr.sort();
-// console.log(arr);
-
-// STUFF THAT DIDNT WORK AT ALL aka FAFO!!!!
-
-// if(a.firsName < b.firstName) { return -1; }
-// if(a.firstName > b.firstName)
-// return 0;
-
-// students.sort((a, b) => a.firstname.localeCompare(b.firstname))
-// firstName.forEach((students) => {
-//   let studentName = document.createElement("li");
-//   studentName.textContent = students.firstName + ", " + students.lastName + ", " + students.age;
-//   document.querySelector("#userList").appendChild(studentName);
-// })
-// })
-
-// let firstName = students.sort((a, b) => a.firstName - b.firstName);
-
-// firstName.sort()
-// console.log(students)
-// document.querySelector("#userList").innerHTML = "";
-// let firstName = students.sort((a, b) => a.names - b.names);
-// firstName.forEach((students) => {
-//   let firstName = document.createElement("li");
-//   firstName.textContent = students.firstName + ", " + students.lastName + ", " + students.age;
-//   document.querySelector("#userList").appendChild(firstName);
-// })
-
-// fetch("https://api.mocki.io/v2/01047e91/students")
-//   .then((response) => {
-//     console.log(response);
-//     return response.json();
-//   })
-
-//   .then((data) => {
-//     let profileCard = document.createElement("ol");
-//       data.forEach((students) => {
-//       let name = document.createElement("li");
-//       let list = document.createElement("span");
-//       list.textContent = students.firstName + " " + students.lastName + " " + students.age;
-
-//       let hobbies = document.createElement("p");
-//       hobbies.textContent = students.hobbies;
-
-//       let programme= document.createElement("p");
-//       programme.textContent = students.programme
-
-//       name.appendChild(list);
-//       profileCard.appendChild(name);
-//       profileCard.appendChild(hobbies);
-//       profileCard.appendChild(programme);
-
-//     });
-//     document.body.appendChild(profileCard);
-//   });
